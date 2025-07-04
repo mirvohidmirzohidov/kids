@@ -22,6 +22,9 @@ const Register = React.memo(() => {
   const [originalId, setOriginalId] = useState(null);
   const [decryptedId, setDecryptedId] = useState(null);
 
+  console.log(decryptedId, phone);
+  
+
 
   const navigate = useNavigate();
 
@@ -93,10 +96,11 @@ const Register = React.memo(() => {
       setConfirmPassword("");
       setError(false);
 
-      const encryptedId = encryptId(phone || "");
+      const encryptedId = encryptId(phone);
       setDecryptedId(decryptId(encryptedId));
 
       localStorage.setItem("token", data.token);
+      localStorage.setItem("phone-number", phone);
       navigate(`?verif=${encryptedId}`);
       const verifId = [
         {
@@ -108,14 +112,14 @@ const Register = React.memo(() => {
     } catch (err) {
       setError("Ошибка соединения с сервером.");
     }
-  };
+  };  
 
   return (
     <div className={styles.register}>
       <div className={styles.title}>
         <h1>РЕГИСТРАЦИЯ</h1>
       </div>
-      {verif && decryptId(verif) === phone ? (  <SmsCodeVerification />
+      {verif && decryptedId === localStorage.getItem("phone-number") ? (  <SmsCodeVerification />
 ): (
         <form onSubmit={handleButtonClick}>
           <div className={styles.inputs}>
